@@ -1,0 +1,30 @@
+{
+  "info": {
+    "name": "API Employees Collection",
+    "_postman_id": "11111111-2222-3333-4444-555555555555",
+    "description": "Colección para probar la API de employees",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    { "name": "Health", "request": { "method": "GET", "url": "http://localhost:8000/health" } },
+    { "name": "List all", "request": { "method": "GET", "url": "http://localhost:8000/api/employees" } },
+    { "name": "Page 1", "request": { "method": "GET", "url": "http://localhost:8000/api/employees?page=1" } },
+    { "name": "Page 2", "request": { "method": "GET", "url": "http://localhost:8000/api/employees?page=2" } },
+    { "name": "Filter user=true", "request": { "method": "GET", "url": "http://localhost:8000/api/employees?user=true" } },
+    { "name": "Filter badges=black", "request": { "method": "GET", "url": "http://localhost:8000/api/employees?badges=black" } },
+    { "name": "Oldest", "request": { "method": "GET", "url": "http://localhost:8000/api/employees/oldest" } },
+    { "name": "Find by name (Sue)", "request": { "method": "GET", "url": "http://localhost:8000/api/employees/Sue" } },
+    {
+      "name": "Create (POST)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Alice\",\n  \"age\": 29,\n  \"phone\": {\"personal\": \"555-111-111\", \"work\": \"555-222-222\", \"ext\": \"1234\"},\n  \"privileges\": \"user\",\n  \"favorites\": {\"artist\": \"Van Gogh\", \"food\": \"tacos\"},\n  \"finished\": [1,2],\n  \"badges\": [\"blue\"],\n  \"points\": [{\"points\": 90, \"bonus\": 10}]\n}"
+        },
+        "url": "http://localhost:8000/api/employees"
+      }
+    }
+  ]
+}

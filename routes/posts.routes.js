@@ -19,6 +19,7 @@ router.post("/", async (req, res) => {
     const post = await Post.create({ title, text, author });
     return res.status(201).json(post);
   } catch (err) {
+    console.error("[POST /api/posts] error:", err);
     if (err.name === "ValidationError") {
       return res.status(400).json({ code: "bad_request", errors: mapMongooseErrors(err) });
     }

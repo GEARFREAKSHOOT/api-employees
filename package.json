@@ -1,19 +1,17 @@
 {
   "name": "api-employees",
-  "version": "1.0.0",
-  "description": "API HTTP con Express para employees",
+  "version": "1.1.0",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "test": "node --test --loader=ts-node/esm || jest"
+    "test": "jest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.19.2",
+    "mongoose": "^8.6.0",
+    "mongodb-memory-server": "^10.1.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {

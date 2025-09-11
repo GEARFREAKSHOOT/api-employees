@@ -8,3 +8,9 @@
 ```bash
 npm i
 npm start
+
+Variables usadas en Postman: 
+{{baseUrl}}, {{token}}, {{postId}}
+
+Flujo:
+Register → Login → CRUD Posts (con token) y Employees sin auth

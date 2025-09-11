@@ -3,10 +3,17 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
+
+// Rutas y middlewares nuevos (parte 3)
 import postsRouter from "./routes/posts.routes.js";
+import usersRouter from "./routes/users.routes.js";
+import authRouter from "./routes/auth.routes.js";
+import { requireAuth } from "./middlewares/auth.js";
+
+// Conexión a Mongo (en memoria por defecto; ajusta en tu db.config si tienes toggle)
 import { connectDB } from "./config/db.config.js";
 
-// ---------- Carga employees.json (ESM + fallback) ----------
+// ---------- Carga employees.json (modo ESM con fallback a fs) ----------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -24,26 +31,27 @@ let employeesMem = [...employees];
 const app = express();
 app.use(express.json());
 
-// ---------- Posts CRUD (Mongo en memoria) ----------
-app.use("/api/posts", postsRouter);
+// ---------- PARTE 3: Usuarios y Login (públicos) ----------
+app.use("/api/users", usersRouter);  // POST /api/users (registro)
+app.use("/api", authRouter);         // POST /api/login
 
-// ---------- Employees (tarea previa) ----------
+// ---------- PARTE 3: Posts PROTEGIDOS con JWT ----------
+app.use("/api/posts", requireAuth, postsRouter);
+
+// ---------- PARTE 1–2: Employees (público para la tarea) ----------
 const phoneSchema = z.object({
   personal: z.string(),
   work: z.string(),
   ext: z.string()
 });
-
 const favoritesSchema = z.object({
   artist: z.string(),
   food: z.string()
 });
-
 const pointsSchema = z.object({
   points: z.number(),
   bonus: z.number()
 });
-
 const employeeSchema = z.object({
   name: z.string(),
   age: z.number().int().nonnegative(),
@@ -79,21 +87,18 @@ app.get("/api/employees", (req, res) => {
   data = paginate(data, page);
   res.json(data);
 });
-
 app.get("/api/employees/oldest", (_req, res) => {
   if (employeesMem.length === 0) return res.status(404).json({ code: "not_found" });
   let oldest = employeesMem[0];
   for (let i = 1; i < employeesMem.length; i++) if (employeesMem[i].age > oldest.age) oldest = employeesMem[i];
   res.json(oldest);
 });
-
 app.get("/api/employees/:name", (req, res) => {
   const { name } = req.params;
   const found = employeesMem.find(e => e.name.toLowerCase() === String(name).toLowerCase());
   if (!found) return res.status(404).json({ code: "not_found" });
   res.json(found);
 });
-
 app.post("/api/employees", (req, res) => {
   const parse = employeeSchema.safeParse(req.body);
   if (!parse.success) return res.status(400).json({ code: "bad_request" });
@@ -101,17 +106,14 @@ app.post("/api/employees", (req, res) => {
   res.status(201).json(parse.data);
 });
 
-// Health
+// ---------- Health ----------
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
 // ---------- Boot ----------
 const PORT = process.env.PORT || 8000;
-
-// Usamos top-level await para levantar DB antes del server
 await connectDB();
-
 app.listen(PORT, () => {
   console.log(`✅ API running on http://localhost:${PORT}`);
 });
 
-export default app;
+export default app; // útil para tests con Supertest

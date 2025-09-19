@@ -30,6 +30,7 @@ let employeesMem = [...employees];
 // ---------- App ----------
 const app = express();
 app.use(express.json());
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // ---------- PARTE 3: Usuarios y Login (públicos) ----------
 app.use("/api/users", usersRouter);  // POST /api/users (registro)

@@ -13,6 +13,8 @@ router.post("/login", async (req, res) => {
   const user = await User.findOne({ email: String(email).toLowerCase() });
   if (!user) return res.status(401).json({ code: "unauthorized" });
 
+  if (!user.active) return res.status(401).json({ code: "inactive" });
+
   const ok = await user.comparePassword(password);
   if (!ok) return res.status(401).json({ code: "unauthorized" });
 

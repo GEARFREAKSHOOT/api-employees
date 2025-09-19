@@ -14,3 +14,6 @@ Variables usadas en Postman:
 
 Flujo:
 Register → Login → CRUD Posts (con token) y Employees sin auth
+
+Registro devuelve activationUrl para confirmar cuenta.
+El avatar se sirve desde /uploads/… y su URL aparece como avatarUrl.

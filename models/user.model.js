@@ -9,12 +9,13 @@ const UserSchema = new mongoose.Schema(
     email:    { type: String, required: true, trim: true, lowercase: true, unique: true, match: [emailRegex, "Invalid email"] },
     password: { type: String, required: true, minlength: 6 },
     bio:      { type: String, default: "" },
-    active:   { type: Boolean, default: false }
+    active:   { type: Boolean, default: false },
+    avatar:   { type: String, default: "" },      // nombre de archivo en /uploads
+    activationToken: { type: String, default: "" } // token para confirmar
   },
   { timestamps: true, versionKey: false }
 );
 
-// Hash de contraseña si cambió
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
